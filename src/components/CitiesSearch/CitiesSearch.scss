@@ -1,0 +1,30 @@
+.city {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__background {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 0;
+    background-color: lightblue;
+
+    &--night {
+      background-color: black;
+    }
+  }
+
+  &__inputContainer {
+    z-index: 10;
+    display: flex;
+  }
+
+  &__input {
+    background-color: #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 16px;    
+  }
+}
