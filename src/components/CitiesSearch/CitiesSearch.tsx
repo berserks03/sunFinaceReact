@@ -81,8 +81,8 @@ const CitiesSearch: FC = () => {
         />
 
         <Toggle
-          enabled="C"
-          disabled="F"
+          enabled="C°"
+          disabled="F°"
           defaultVal={units}
           valHandler={unitsHandler}
         />
