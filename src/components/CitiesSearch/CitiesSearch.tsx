@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { CitiesResponse, City } from 'types/types'
 import './CitiesSearch.scss'
 import CitiesModel from 'models/CitiesModel'
@@ -14,21 +14,6 @@ const CitiesSearch: FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [units, setUnits] = useState<boolean>(true)
   const [dayNight, setDayNight] = useState<boolean>(true)
-
-  const fetchCities = () => {
-    const urlbBeginig = "https://openweathermap.org/data/2.5/find?q=";
-      const urlEnd = "&appid=439d4b804bc8187953eb36d2a8c26a02&units=" + whichUnits;
-      const url = urlbBeginig
-                  + userInput
-                  + urlEnd;
-      
-      if (isEnoughLongInput()) {
-        fetch(url, {method: "GET", mode: 'cors'})
-          .then(res => res.json())
-          .then((data: CitiesResponse) => setCities(CitiesModel.createFromCollection(data.list)))
-          .catch(err => console.log('Fetch Error :-S', err));
-      }
-  }
 
   const inputHandler = (city: City) => {
     setCity(city);
@@ -53,17 +38,32 @@ const CitiesSearch: FC = () => {
     return cities.length > 0;
   }
 
-  const isEnoughLongInput = () => {
+  const isEnoughLongInput = useCallback(() => {
     return userInput.length > 2;
-  }
+  },[userInput.length])
 
-  const whichUnits = () => {
+  const whichUnits = useCallback(() => {
     return units ? 'metric' : 'imperial';
-  }
+  },[units])
+
+  const fetchCities = useCallback(() => {
+    const urlbBeginig = "https://openweathermap.org/data/2.5/find?q=";
+      const urlEnd = "&appid=439d4b804bc8187953eb36d2a8c26a02&units=" + whichUnits;
+      const url = urlbBeginig
+                  + userInput
+                  + urlEnd;
+      
+      if (isEnoughLongInput()) {
+        fetch(url, {method: "GET", mode: 'cors'})
+          .then(res => res.json())
+          .then((data: CitiesResponse) => setCities(CitiesModel.createFromCollection(data.list)))
+          .catch(err => console.log('Fetch Error :-S', err));
+      }
+  }, [isEnoughLongInput, userInput, whichUnits])
 
   useEffect(() => {
     fetchCities();
-  }, [userInput])
+  }, [fetchCities, userInput])
 
   return (
     <div className="city container">
